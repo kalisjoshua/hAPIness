@@ -3,6 +3,7 @@
 
 var assert = require("chai").assert
   , http = require("http")
+  , key = (require("fs")).readFileSync("./api.key", "UTF-8")
   , smugmug = require("../smugmug.api");
 
 describe("SmugmugAPI", function () {
@@ -44,27 +45,29 @@ describe("SmugmugAPI", function () {
     });
   });
 
-  describe("Requests", function () {
-    it("should get a response from a url.", function (done) {
-      function complete (response) {
-        var m = '';
+  console.log(key);
 
-        response.on("data", function (chunk) {
-          m += chunk;
-        });
+  // describe("Requests", function () {
+  //   it("should get a response from a url.", function (done) {
+  //     function complete (response) {
+  //       var m = '';
 
-        response.on("end", function () {
-          console.log(m);
-          done();
-        });
-      }
+  //       response.on("data", function (chunk) {
+  //         m += chunk;
+  //       });
 
-      http
-        .request({
-          host: "api.smugmug.com"
-          ,path: "/services/api/json/1.2.2/?method=smugmug.login.anonymously&APIKey=6C3JkTZdWzQjswrYpAMOUgBAhIkpJtTx&JSONCallback=?"
-        }, complete)
-        .end();
-    });
-  });
+  //       response.on("end", function () {
+  //         console.log(m);
+  //         done();
+  //       });
+  //     }
+
+  //     http
+  //       .request({
+  //         host: "api.smugmug.com"
+  //         ,path: "/services/api/json/1.2.2/?method=smugmug.login.anonymously&APIKey=6C3JkTZdWzQjswrYpAMOUgBAhIkpJtTx&JSONCallback=?"
+  //       }, complete)
+  //       .end();
+  //   });
+  // });
 });
