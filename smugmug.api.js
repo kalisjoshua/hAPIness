@@ -41,6 +41,10 @@
     }
   };
 
+  function Smugmug (key, version) {
+    return new SmugmugAPI(key, version);
+  };
+
   var versions = {
       "1.2.2": [
         "albums.applyWatermark"
@@ -225,7 +229,5 @@
         ,"watermarks.getInfo"]
     };
 
-  return function (key, version) {
-    return new SmugmugAPI(key, version);
-  };
+  typeof module === "undefined" ? this.Smugmug = Smugmug : module.exports = Smugmug;
 }());
