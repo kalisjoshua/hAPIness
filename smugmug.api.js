@@ -42,16 +42,15 @@
     if (this.SessionID && !params.SessionID) {
       params.SessionID = this.SessionID;
     }
+
+    var u = this.url.replace("{secure}", (!!https ? "s" : ""));
     
     if (this.param) {
-      return this.url
-        .replace("{secure}", (!!https ? "s" : ""))
-        .replace("{params}", this.param(params));
+      return u.replace("{params}", this.param(params));
     } else {
       return {
         "params": params
-        ,"url": this.url
-          .replace("{secure}", (!!https ? "s" : ""))
+        ,"url": u
       };
     }
   }
