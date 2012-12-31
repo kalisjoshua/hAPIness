@@ -2,6 +2,7 @@
 /*globals describe it module require*/
 
 var assert = require("chai").assert
+  , http = require("http")
   , smugmug = require("../smugmug.api");
 
 describe("SmugmugAPI", function () {
@@ -40,6 +41,30 @@ describe("SmugmugAPI", function () {
       assert(api.albums.applyWatermark, "Smugmug.albums.applyWatermark should exist");
       assert(api.coupons.create, "Smugmug.coupons.create should exist");
       assert(api.login.anonymously, "Smugmug.login.anonymously should exist");
+    });
+  });
+
+  describe("Requests", function () {
+    it("should get a response from a url.", function (done) {
+      function complete (response) {
+        var m = '';
+
+        response.on("data", function (chunk) {
+          m += chunk;
+        });
+
+        response.on("end", function () {
+          console.log(m);
+          done();
+        });
+      }
+
+      http
+        .request({
+          host: "api.smugmug.com"
+          ,path: "/services/api/json/1.2.2/?method=smugmug.login.anonymously&APIKey=6C3JkTZdWzQjswrYpAMOUgBAhIkpJtTx&JSONCallback=?"
+        }, complete)
+        .end();
     });
   });
 });
