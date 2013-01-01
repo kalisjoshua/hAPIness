@@ -12,27 +12,30 @@ The library doesn't have any external dependancies; this does also mean that it 
 
 ## Usage
 
-First, you will need to include the `hAPIness.js` file in you project somehow; be that"
+First, you will need to include the `hAPIness.js` file in you project somehow."
 
-```
+**Browser Environments**
+
+```javascript
 <script src="hAPIness.js"></script>
+// or using a script loader, such as RequireJS
 ```
 
-or via some other method.
+Using jQuery for AJAX and parameterization.
 
-Then, you will need to configure it for your use.
-
-```
+```javascript
 // use smugmug as the variable name to make you code fit the
 // API methods SmugMug provides; e.g. smugmug.albums.get()
 var smugmug = hAPIness("myAPIkey", "1.3.0");
 
-// if you like using jQuery I suggest
 // this gives hAPIness the ability to fully create URLs for you
 hAPIness.setParamFn($.param);
 
+smugmug.service.ping();
+// returns
+// http://api.smugmug.com/services/api/json/1.3.0/?method=smugmug.service.ping&APIKey=myAPIkey&Callback=? 
+
 // now hAPIness can create URLs for you to use in ajax calls
-// again if you are using jQuery for ajax
 $.ajax({
   dataType: "jsonp"
   ,success: function (data) {
@@ -40,4 +43,30 @@ $.ajax({
   })
   ,url: smugmug.albums.get({NickName: "SmugMug_username"})
 });
+```
+
+**NodeJS Environments**
+
+First include the package in the project from npm.
+
+```bash
+$ npm install hapiness
+```
+
+Then use the library in your project
+
+```javascript
+var hAPIness = require("hAPIness")
+  , qs = require("qs");
+
+// use smugmug as the variable name to make you code fit the
+// API methods SmugMug provides; e.g. smugmug.albums.get()
+var smugmug = hAPIness("myAPIkey", "1.3.0");
+
+// this gives hAPIness the ability to fully create URLs for you
+hAPIness.setParamFn(qs.stringify);
+
+smugmug.service.ping();
+// returns
+// http://api.smugmug.com/services/api/json/1.2.2/?method=smugmug.service.ping&APIKey=myAPIkey&JSONCallback=?
 ```
