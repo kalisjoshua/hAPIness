@@ -3,6 +3,8 @@
 (function () {
   "use strict";
 
+  var callback;
+
   function APIHelper (key, version, endpoint) {
     if (!key || !version) {
       throw "An API key and valid version must be supplied to use the Smugmug API.";
@@ -11,7 +13,8 @@
     this.endpoint = endpoint || "json";
     this.APIKey   = key;
     this.version  = version;
-    this.url = "http{secure}://api.smugmug.com/services/api/{endpoint}/{version}/?{params}&JSONCallback=?"
+    this.url = "http{secure}://api.smugmug.com/services/api/{endpoint}/{version}/?{params}&{callback}=?"
+      .replace("{callback}", callback)
       .replace("{endpoint}", this.endpoint)
       .replace("{version}", this.version);
   }
@@ -265,5 +268,11 @@
     return helper;
   }
 
-  typeof module === "undefined" ? this.hAPIness = hAPIness : module.exports = hAPIness;
+  if (typeof module === "undefined") {
+    this.hAPIness = hAPIness;
+    callback = "Callback";
+  } else {
+    module.exports = hAPIness;
+    callback = "JSONCallback";
+  }
 }.call(this));
