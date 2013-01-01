@@ -5,7 +5,7 @@ var assert = require("chai").assert
   , http = require("http")
   , key = (require("fs")).readFileSync("./api.key", "UTF-8")
   , qs = require("querystring")
-  , hAPIness = require("../hAPIness")
+  , hAPIness = require("../lib/hAPIness")
   , url_parser = require("url");
 
 function complete (done) {
