@@ -132,7 +132,7 @@ describe("Smugmug API URL Helper", function () {
     });
   });
 
-  describe("Anonymous Login", function () {
+  describe("Anonymous Login (1.2.2)", function () {
     var smugmug = hAPIness(key, "1.2.2")
           .setParamFn(qs.stringify);
 
