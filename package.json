@@ -1,5 +1,5 @@
 {
-"name": "hAPIness"
+"name": "hapiness"
 ,"description": "The hAPIness function wraps the complexities of creating valid and usable URLs for requests to the Smugmug API by requiring only the necessary information and allows for dependancy injection if desired for easier use."
 ,"version": "0.5.0"
 ,"repository": {
