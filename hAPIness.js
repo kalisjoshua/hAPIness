@@ -17,12 +17,15 @@
   }
 
   APIHelper.prototype = {
-    setParamFn: function (fn) {
+    getSessionID: function () {
+      return this.SessionID;
+    }
+    ,setParamFn: function (fn) {
       this.param = fn;
 
       return this;
     }
-    ,setSession: function (id) {
+    ,setSessionID: function (id) {
       if (!id) {
         throw "A SessionID must be passed in to set it on the object";
       }
