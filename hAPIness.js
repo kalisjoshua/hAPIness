@@ -266,4 +266,4 @@
   }
 
   typeof module === "undefined" ? this.hAPIness = hAPIness : module.exports = hAPIness;
-}());
+}.call(this));
