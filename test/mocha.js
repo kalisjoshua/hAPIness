@@ -5,7 +5,7 @@ var assert = require("chai").assert
   , http = require("http")
   , key = (require("fs")).readFileSync("./api.key", "UTF-8")
   , qs = require("querystring")
-  , smugmug_builder = require("../smugmug.api")
+  , smugmug_builder = require("../hAPIness")
   , url_parser = require("url");
 
 function complete (done) {
