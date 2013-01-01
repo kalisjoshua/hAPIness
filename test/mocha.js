@@ -8,7 +8,16 @@ var assert = require("chai").assert
   , smugmug_builder = require("../smugmug.api")
   , url_parser = require("url");
 
-describe("SmugmugAPI", function () {
+function complete (done) {
+  return function (response) {
+    var data = '';
+
+    response.on("data", function (chunk) {data += chunk;});
+    response.on("end", function () {done(data);});
+  };
+}
+
+describe("Smugmug API URL Helper", function () {
   it("should be a function.", function () {
     assert.isFunction(smugmug_builder);
   });
@@ -25,25 +34,25 @@ describe("SmugmugAPI", function () {
     }, "The version passed must be valid.");
   });
 
-  it("should not throw an error", function () {
+  it("should not throw an error on valid arguments", function () {
     assert.doesNotThrow(function () {
       smugmug_builder("1234", "1.3.0");
     }, "The version is valid even though the API key hasn't been tested.");
   });
 
-  describe("Methods", function () {
+  describe("API version methods", function () {
     it("should have API version 1.3.0 methods defined.", function() {
-      var api = smugmug_builder("1234", "1.3.0");
-      assert(api.accounts.browse, "Smugmug.accounts.browse should exist");
-      assert(api.sharegroups.albums.remove, "Smugmug.sharegroups.albums.remove should exist");
-      assert(api.coupons.restrictions.albums.add, "Smugmug.coupons.restrictions.albums.add should exist");
+      var smugmug = smugmug_builder("1234", "1.3.0");
+      assert(smugmug.accounts.browse, "Smugmug.accounts.browse should exist");
+      assert(smugmug.sharegroups.albums.remove, "Smugmug.sharegroups.albums.remove should exist");
+      assert(smugmug.coupons.restrictions.albums.add, "Smugmug.coupons.restrictions.albums.add should exist");
     });
 
     it("should have API version 1.2.2 methods defined.", function() {
-      var api = smugmug_builder("1234", "1.2.2");
-      assert(api.albums.applyWatermark, "Smugmug.albums.applyWatermark should exist");
-      assert(api.coupons.create, "Smugmug.coupons.create should exist");
-      assert(api.login.anonymously, "Smugmug.login.anonymously should exist");
+      var smugmug = smugmug_builder("1234", "1.2.2");
+      assert(smugmug.albums.applyWatermark, "Smugmug.albums.applyWatermark should exist");
+      assert(smugmug.coupons.create, "Smugmug.coupons.create should exist");
+      assert(smugmug.login.anonymously, "Smugmug.login.anonymously should exist");
     });
   });
 
@@ -67,33 +76,55 @@ describe("SmugmugAPI", function () {
     });
   });
 
-  // describe("Requests", function () {
-  //   var smugmug = smugmug_builder(key, "1.2.2")
-  //     , config = smugmug.service.ping()
-  //     , url = config.url
-  //       .replace("{params}", qs.stringify(config.params))
-  //     , request_obj = url_parser.parse(url);
+  describe("Ping requests", function () {
+    it("should work, with no param config.", function (done) {
+      var smugmug = smugmug_builder(key, "1.2.2")
+        , config = smugmug.service.ping()
+        , url = config.url
+          .replace("{params}", qs.stringify(config.params))
+        , request_obj = url_parser.parse(url);
 
-  //   it("should get a response from a url.", function (done) {
-  //     function complete (response) {
-  //       var m = '';
+      http
+        .request({
+          host: request_obj.host
+          ,path: request_obj.path
+        }, complete(function (data) {
+          data = JSON.parse(data);
+          assert.equal(data.stat, "ok", "The status returned should be 'ok'");
+          done();
+        }))
+        .end();
+    });
 
-  //       response.on("data", function (chunk) {
-  //         m += chunk;
-  //       });
+    it("should work, with param.", function (done) {
+      var smugmug = smugmug_builder(key, "1.2.2")
+            .setParamFn(qs.stringify)
+        , request_obj = url_parser.parse(smugmug.service.ping());
 
-  //       response.on("end", function () {
-  //         console.log(m);
-  //         done();
-  //       });
-  //     }
+      http
+        .request({
+          host: request_obj.host
+          ,path: request_obj.path
+        }, complete(function (data) {
+          data = JSON.parse(data);
+          assert.equal(data.stat, "ok", "The status returned should be 'ok'");
+          done();
+        }))
+        .end();
+    });
 
-  //     http
-  //       .request({
-  //         host: request_obj.host
-  //         ,path: request_obj.path
-  //       }, complete)
-  //       .end();
-  //   });
-  // });
+    it("should work, without request config cleaning.", function (done) {
+      var url = smugmug_builder(key, "1.2.2")
+            .setParamFn(qs.stringify)
+            .service.ping();
+
+      http
+        .request(url_parser.parse(url), complete(function (data) {
+          data = JSON.parse(data);
+          assert.equal(data.stat, "ok", "The status returned should be 'ok'");
+          done();
+        }))
+        .end();
+    });
+  });
 });

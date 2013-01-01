@@ -3,7 +3,7 @@
 (function () {
   "use strict";
 
-  function SmugmugAPIHelper (key, version, endpoint) {
+  function APIHelper (key, version, endpoint) {
     if (!key || !version) {
       throw "An API key and valid version must be supplied to use the Smugmug API.";
     }
@@ -16,7 +16,7 @@
       .replace("{version}", this.version);
   }
 
-  SmugmugAPIHelper.prototype = {
+  APIHelper.prototype = {
     setParamFn: function (fn) {
       this.param = fn;
 
@@ -55,8 +55,8 @@
     }
   }
 
-  function builder (key, version) {
-    var helper = new SmugmugAPIHelper(key, version)
+  function hAPIness (key, version) {
+    var helper = new APIHelper(key, version)
       , versions = {
         "1.2.2": [
           "albums.applyWatermark"
@@ -262,5 +262,5 @@
     return helper;
   }
 
-  typeof module === "undefined" ? this.smugmug = builder : module.exports = builder;
+  typeof module === "undefined" ? this.hAPIness = hAPIness : module.exports = hAPIness;
 }());
